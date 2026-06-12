@@ -1,0 +1,16 @@
+{
+  "builtin-baseline": "b4097dd14b05a86289e1eaa20387e09d16c7bb36",
+  "dependencies": [
+    {
+      "name": "llama-cpp",
+      "version>=": "9030"
+    },
+    {
+      "name": "fmt",
+      "version>=": "12.1.0"
+    },
+    {
+      "name": "nlohmann-json"
+    }
+  ]
+}
