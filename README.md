@@ -18,6 +18,41 @@ Replicates `perplexity()` from llama.cpp b9030 (`tools/perplexity/perplexity.cpp
 - Log-softmax in double precision; NLL accumulated in `double`.
 - `PPL = exp(total_nll / n_tokens_scored)`
 
+## Project structure
+
+```
+perplexityScorer/
+├── CMakeLists.txt          # Build definition; also wires up the embedded-corpus codegen step
+├── vcpkg.json              # vcpkg manifest (llama.cpp, fmt, nlohmann_json, ...)
+├── includes/                # Public headers, one per module
+│   ├── config.h             # Run configuration struct + JSON parsing (engine, paths, hyperparameters)
+│   ├── corpus.h              # Corpus loading/tokenisation interface
+│   ├── model_loader.h         # llama.cpp model/context loading wrapper
+│   ├── perplexity.h           # Teacher-forcing perplexity computation interface
+│   ├── ollama_engine.h        # Ollama HTTP inference engine interface
+│   ├── output.h               # Result serialization (resumen.json / .jsonl) interface
+│   ├── sha256.h                # SHA-256 implementation, used to fingerprint the corpus/model
+│   └── third_party/
+│       └── ollama.hpp          # Vendored single-header Ollama HTTP client
+├── src/                      # Implementation files matching the headers above
+│   ├── main.cpp                # CLI entry point: argument/JSON parsing, engine dispatch
+│   ├── model_loader.cpp
+│   ├── corpus.cpp
+│   ├── perplexity.cpp
+│   ├── output.cpp
+│   └── ollama_engine.cpp
+├── cmake/
+│   ├── aarch64-toolchain.cmake  # vcpkg chainload toolchain for Raspberry Pi 5 cross-compilation
+│   └── gen_corpus_header.py     # Generates corpus_embedded.h from corpus/wiki.test.raw at build time
+├── corpus/
+│   ├── wiki.test.raw           # WikiText-2 (test split), fetched manually (not tracked in git)
+│   └── credits                 # Source URL for the corpus download
+├── data/                      # Placeholder for user-supplied data (empty by default)
+├── doc/                       # Placeholder for additional documentation (empty by default)
+├── config_example.json         # Sample run configuration
+└── results/                    # Generated at runtime: one timestamped folder per run (git-ignored)
+```
+
 ## Getting the corpus
 
 ```bash
